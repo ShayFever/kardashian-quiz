@@ -118,6 +118,8 @@
       border: 1px solid rgba(110,231,255,.25);
       color: var(--text);
       font-size: 13px;
+      margin-left: 6px;
+      vertical-align: middle;
     }
 
     .resultTitle{ font-size:24px; margin: 8px 0 6px; }
@@ -125,6 +127,36 @@
     .divider{ height:1px; background: rgba(255,255,255,.10); margin: 12px 0; }
     .small{ font-size:12px; color:var(--muted); margin-top:12px; }
     .cta{ color:var(--muted); line-height:1.45; margin: 0; }
+
+    .resultGrid{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (min-width: 760px){
+      .resultGrid{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+    .resultCard{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.03);
+    }
+    .resultRank{
+      font-size:12px;
+      color: var(--muted);
+      margin-bottom:6px;
+    }
+    .resultName{
+      font-weight:700;
+      margin-bottom:6px;
+      line-height:1.2;
+    }
+    .resultPts{
+      font-size:12px;
+      color: var(--muted);
+      margin-top:8px;
+    }
   </style>
 </head>
 
@@ -180,6 +212,7 @@
   }
 
   // --- 10 questions (every answer gives points to 2–4 people) ---
+  // Q10 updated to a "description-based" tie-breaker (no names)
   const QUESTIONS = [
     {
       text: "1) When plans fall apart, what’s your instinct?",
@@ -281,22 +314,22 @@
       ]
     },
     {
-      text: "10) Final tie-breaker: be honest — who are you?",
+      text: "10) Which line describes you best?",
       options: [
-        { label:"Kris: wine mom, bossy, secretly runs everything.", pts:{ kris:5, corey:1 } },
-        { label:"Kim: savvy, rich, goal-oriented, always plotting success.", pts:{ kim:5, kris:1 } },
-        { label:"Kanye: thoughtful gifts + chaotic mood swings.", pts:{ kanye:5, kim:1 } },
-        { label:"North: fashionable, too honest, a little mean.", pts:{ north:5, kylie:1 } },
-        { label:"Kourtney: miserable, rude, morally superior, isolates.", pts:{ kourtney:5, kendall:1 } },
-        { label:"Scott: funny asshole with issues.", pts:{ scott:5, tristan:1 } },
-        { label:"Khloé: angel, kind-hearted, forgiving to a fault.", pts:{ khloe:5, corey:1 } },
-        { label:"Tristan: athletic ladies’ man, unfaithful.", pts:{ tristan:5, scott:1 } },
-        { label:"Kylie: trendy, bubbly, does her own thing, flakes.", pts:{ kylie:5, north:1 } },
-        { label:"Kendall: snobby, hot, horse girl, single + thriving.", pts:{ kendall:5, kim:1 } },
-        { label:"Corey: loyal, quiet, supportive, mysterious.", pts:{ corey:5, kris:1 } },
-        { label:"Rob: recluse/hermit, baby mama drama, best years behind him.", pts:{ rob:5, kendall:1 } },
-        { label:"Bruce (Olympic era): athletic, strict, critical, dedicated.", pts:{ bruce:5, kris:1 } },
-        { label:"Caitlyn (current era): does her own thing, talks shit, comes around sometimes.", pts:{ caitlyn:5, kanye:1 } },
+        { label:"I run the show (and I’m lovable about it… mostly).", pts:{ kris:6, kim:2, bruce:1 } },
+        { label:"I’m polished, strategic, and I always get what I want.", pts:{ kim:6, kris:2, kendall:1 } },
+        { label:"I’m unpredictable: big highs, big lows, big gestures.", pts:{ kanye:6, north:2, scott:1 } },
+        { label:"I’m fashionable, brutally honest, and a little mean.", pts:{ north:6, kylie:2, kendall:1 } },
+        { label:"I’m above this. I isolate and judge quietly.", pts:{ kourtney:6, kendall:2, rob:1 } },
+        { label:"I’m funny, chaotic, and somehow still invited.", pts:{ scott:6, tristan:2, kylie:1 } },
+        { label:"I’m kind-hearted and forgiving to a fault.", pts:{ khloe:6, corey:2, kim:1 } },
+        { label:"I’m athletic, charming, and I do not behave.", pts:{ tristan:6, scott:2, kanye:1 } },
+        { label:"I’m trendy, bubbly, and I might flake on plans.", pts:{ kylie:6, north:2, kendall:1 } },
+        { label:"I’m hot, snobby, single, and always traveling.", pts:{ kendall:6, kim:2, kylie:1 } },
+        { label:"I’m quiet, loyal, supportive, and mysteriously thriving.", pts:{ corey:6, kris:2, khloe:1 } },
+        { label:"I’m private, withdrawn, and my best years are behind me.", pts:{ rob:6, kendall:2, kourtney:1 } },
+        { label:"I’m strict, competitive, and critical (discipline is my personality).", pts:{ bruce:6, kris:2, kim:1 } },
+        { label:"I do my own thing, say what I want, and show up occasionally.", pts:{ caitlyn:6, kanye:2, rob:1 } },
       ]
     },
   ];
@@ -346,23 +379,32 @@
     counter.textContent = "Result";
     backBtn.disabled = history.length === 0;
 
-    // Find max score
-    let max = -Infinity;
-    for (const pid of Object.keys(score)) max = Math.max(max, score[pid]);
-
-    const tied = Object.keys(score).filter(pid => score[pid] === max);
-
-    // If tie, choose earliest in PEOPLE order (Q10 should usually prevent ties)
+    // Rank everyone by score (desc), stable tie-break by PEOPLE order
     const order = PEOPLE.map(p => p.id);
-    const winnerId = tied.sort((a,b) => order.indexOf(a) - order.indexOf(b))[0];
-    const w = byId[winnerId];
+    const ranked = Object.entries(score)
+      .map(([pid, pts]) => ({ pid, pts, order: order.indexOf(pid) }))
+      .sort((a,b) => (b.pts - a.pts) || (a.order - b.order));
+
+    const top3 = ranked.slice(0, 3).map((r, i) => {
+      const p = byId[r.pid];
+      const rankLabel = i === 0 ? "Top Match" : (i === 1 ? "Runner Up" : "Third Place");
+      return `
+        <div class="resultCard">
+          <div class="resultRank">${rankLabel}</div>
+          <div class="resultName">${p.name}<span class="badge">${p.badge}</span></div>
+          <div class="resultBlurb">${p.blurb}</div>
+          <div class="resultPts">${r.pts} pts</div>
+        </div>
+      `;
+    }).join("");
 
     content.innerHTML = `
-      <div class="resultTitle">
-        You’re <span style="color:var(--accent)">${w.name}</span>
-        <span class="badge">${w.badge}</span>
+      <div class="resultTitle">Your Top 3 Matches</div>
+      <p class="resultBlurb">Your #1 is the closest match, but the other two are definitely in your mix. (Argue in the group chat accordingly.)</p>
+
+      <div class="resultGrid">
+        ${top3}
       </div>
-      <p class="resultBlurb">${w.blurb}</p>
 
       <div class="divider"></div>
 
