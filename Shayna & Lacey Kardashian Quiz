@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Which Kardashian/Jenner Are You? (Family Quiz)</title>
+  <style>
+    :root { --bg:#0b0b0f; --card:#14141c; --text:#f2f2f5; --muted:#b6b6c3; --accent:#ff4fd8; --accent2:#6ee7ff; }
+    body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: radial-gradient(1000px 600px at 15% 10%, rgba(255,79,216,.15), transparent 55%), radial-gradient(900px 600px at 90% 30%, rgba(110,231,255,.12), transparent 55%), var(--bg); color:var(--text); }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 48px; }
+    .title { font-size: 28px; margin: 8px 0 6px; letter-spacing: .2px; }
+    .subtitle { color: var(--muted); margin: 0 0 18px; line-height: 1.35; }
+    .card { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+    .row { display:flex; gap: 12px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+    .pill { display:inline-flex; align-items:center; gap:8px; color: var(--muted); font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.03); }
+    .progress { height: 8px; width: 100%; background: rgba(255,255,255,.08); border-radius: 999px; overflow:hidden; margin-top: 10px; }
+    .bar { height:100%; width:0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .25s ease; }
+    .q { font-size: 18px; margin: 10px 0 14px; line-height: 1.25; }
+    .answers { display:grid; gap: 10px; }
+    button.choice {
+      width: 100%;
+      text-align:left;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .05s ease, background .2s ease, border-color .2s ease;
+      line-height: 1.25;
+      font-size: 15px;
+    }
+    button.choice:hover { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.22); }
+    button.choice:active { transform: translateY(1px); }
+    .controls { display:flex; gap:10px; margin-top: 14px; }
+    .btn {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover { background: rgba(255,255,255,.07); }
+    .btn.primary { border-color: rgba(255,79,216,.45); background: rgba(255,79,216,.12); }
+    .resultTitle { font-size: 24px; margin: 6px 0 6px; }
+    .resultBlurb { color: var(--muted); line-height: 1.45; margin: 0 0 12px; }
+    .grid2 { display:grid; gap: 10px; grid-template-columns: 1fr; }
+    @media (min-width: 760px){ .grid2 { grid-template-columns: 1fr 1fr; } }
+    .small { font-size: 12px; color: var(--muted); margin-top: 12px; }
+    .badge { display:inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(110,231,255,.10); border: 1px solid rgba(110,231,255,.25); color: var(--text); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="title">Which Kardashian/Jenner Are You?</h1>
+    <p class="subtitle">A fun, chaotic family quiz. No data saved. No shame. 10 questions. Instant result.</p>
+
+    <div class="card" id="card">
+      <div class="row">
+        <div class="pill" id="counter">Question 1 of 10</div>
+        <div class="pill" id="hint">Pick what feels most like you.</div>
+      </div>
+      <div class="progress" aria-label="progress"><div class="bar" id="bar"></div></div>
+
+      <div id="content" style="margin-top:10px;"></div>
+
+      <div class="controls" id="controls">
+        <button class="btn" id="backBtn" type="button">Back</button>
+        <button class="btn" id="restartBtn" type="button">Restart</button>
+      </div>
+
+      <div class="small">Tip: If you’re torn between two options, pick the one that would annoy your best friend the most.</div>
+    </div>
+  </div>
+
+<script>
+  // --- People / results ---
+  const PEOPLE = [
+    { id:"kris", name:"Kris Jenner", badge:"Momager Mode", blurb:"You’re strategic, organized, and always 5 steps ahead. You don’t just run the group chat — you run the entire operation. If something succeeds, it’s because you made it happen." },
+    { id:"kim", name:"Kim Kardashian", badge:"Brand Builder", blurb:"You’re ambitious, polished, and you know how to turn chaos into a headline and a paycheck. You love a glow-up, a plan, and a perfectly curated moment." },
+    { id:"kanye", name:"Kanye West", badge:"Visionary Wildcard", blurb:"You’re big ideas, big emotions, and you refuse to be normal about anything. You can be inspiring, confusing, and intense — sometimes all in the same sentence." },
+    { id:"north", name:"North West", badge:"Unfiltered Icon", blurb:"You are the main character and everyone else is just trying to keep up. Creative, loud, hilarious, and absolutely not here for anyone’s rules." },
+    { id:"kourtney", name:"Kourtney Kardashian", badge:"Boundary Queen", blurb:"You’re protective of your peace and you’ll choose vibes over drama every time. You love your people, but you also love saying “no” and meaning it." },
+    { id:"scott", name:"Scott Disick", badge:"Charming Mess", blurb:"You’re funny, chaotic, and somehow still lovable. You can start drama by accident and then talk your way out of it with a one-liner." },
+    { id:"khloe", name:"Khloé Kardashian", badge:"Ride-or-Die", blurb:"You’re loyal, emotional, and you’ll carry everyone’s problems like it’s your job. You love hard, protect harder, and you definitely have opinions." },
+    { id:"tristan", name:"Tristan Thompson", badge:"Apology Tour", blurb:"You’re optimistic to a fault and you keep believing things will be different “this time.” Your growth is real… but so is the mess." },
+    { id:"kylie", name:"Kylie Jenner", badge:"Internet It-Girl", blurb:"You’re trend-aware, glam-forward, and you know how to make an entrance (or a post) that people can’t ignore. You move quietly, then drop a bomb." },
+    { id:"kendall", name:"Kendall Jenner", badge:"Cool Observer", blurb:"You’re low-drama (by choice), selective with your energy, and you hate being forced to explain yourself. You’re chill… until you’re not." },
+    { id:"rob", name:"Rob Kardashian", badge:"Off-the-Grid", blurb:"You’re private, sensitive, and you’d rather disappear than perform. You’re not about the spotlight — you’re about protecting your peace." },
+    { id:"corey", name:"Corey Gamble", badge:"Unbothered Support", blurb:"You’re calm, present, and mysteriously thriving. You don’t need to be loud to have influence. You’re the steady one when everyone else spirals." },
+    { id:"bruce", name:"Bruce (Olympic Era)", badge:"Discipline Machine", blurb:"You’re competitive, structured, and old-school driven. You like goals, routines, and winning. You can out-grind almost anyone when you lock in." },
+    { id:"caitlyn", name:"Caitlyn (Current Era)", badge:"Reinvention Energy", blurb:"You’re about evolution and identity — you’re not afraid to pivot, redefine, and start over. You’ve got “new chapter” energy and you mean it." },
+  ];
+
+  const byId = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+
+  // Helper to award points
+  function addPoints(score, pts) {
+    for (const [pid, val] of Object.entries(pts)) score[pid] = (score[pid] || 0) + val;
+  }
+
+  // --- 10 questions (Q10 is a tie-breaker that still counts) ---
+  const QUESTIONS = [
+    {
+      text: "1) How do you handle conflict?",
+      options: [
+        { label:"I take control and manage the narrative.", pts:{ kris:2, kim:2 } },
+        { label:"I spiral, say too much, then regret it later.", pts:{ khloe:2, scott:1, tristan:1 } },
+        { label:"I make a joke, deflect, and somehow survive.", pts:{ scott:2, kylie:1 } },
+        { label:"I disappear. If you need me, email my assistant (me).", pts:{ kendall:2, rob:2 } },
+        { label:"I turn it into content. We’re posting through it.", pts:{ kylie:2, north:2 } },
+        { label:"I rethink my whole life and start a new era.", pts:{ caitlyn:3 } },
+      ]
+    },
+    {
+      text: "2) In a group, you are…",
+      options: [
+        { label:"The organizer. The spreadsheet. The boss.", pts:{ kris:2, kim:1, bruce:1 } },
+        { label:"The visionary wildcard with opinions nobody asked for.", pts:{ kanye:3 } },
+        { label:"The emotional glue holding everyone together.", pts:{ khloe:2, kourtney:1 } },
+        { label:"The one who’s ‘on the way’ (not on the way).", pts:{ scott:1, kendall:1, rob:1 } },
+        { label:"The main character and everyone knows it.", pts:{ north:2, kylie:2 } },
+        { label:"Quiet support. Present. Unbothered.", pts:{ corey:3 } },
+      ]
+    },
+    {
+      text: "3) Your relationship with attention is…",
+      options: [
+        { label:"I know how to use it strategically.", pts:{ kris:2, kim:2 } },
+        { label:"I want it on my terms, and I’ll burn the rulebook.", pts:{ kanye:3 } },
+        { label:"I accidentally create it. Oops.", pts:{ scott:2, north:1 } },
+        { label:"It drains me. I need to go be a mystery.", pts:{ kendall:2, rob:2 } },
+        { label:"I thrive in it. Cameras love me.", pts:{ kim:2, kylie:2 } },
+        { label:"I don’t need it. I’m just here.", pts:{ corey:3 } },
+      ]
+    },
+    {
+      text: "4) What motivates you most?",
+      options: [
+        { label:"Power, status, and getting the deal done.", pts:{ kris:2, kim:2 } },
+        { label:"Creative expression and being misunderstood.", pts:{ kanye:3 } },
+        { label:"Protecting my peace and my people.", pts:{ kourtney:2, khloe:1 } },
+        { label:"Privacy and not being perceived.", pts:{ kendall:2, rob:2 } },
+        { label:"Fun, chaos, and a little petty victory.", pts:{ scott:2, north:1 } },
+        { label:"Discipline, achievement, and winning.", pts:{ bruce:3 } },
+      ]
+    },
+    {
+      text: "5) Pick your weekend plan:",
+      options: [
+        { label:"Brunch, glam, and a perfectly timed photo dump.", pts:{ kim:2, kylie:2 } },
+        { label:"A wellness routine + boundaries + no drama allowed.", pts:{ kourtney:3 } },
+        { label:"Gym, errands, and helping someone with their crisis.", pts:{ khloe:3 } },
+        { label:"Stay in, be private, and answer nobody.", pts:{ rob:2, kendall:2 } },
+        { label:"Show up late, be funny, cause a minor incident.", pts:{ scott:3 } },
+        { label:"Training, goals, and productivity mode.", pts:{ bruce:3 } },
+      ]
+    },
+    {
+      text: "6) Your vibe in relationships:",
+      options: [
+        { label:"Strategic. Intentional. I’m building something.", pts:{ kim:2, kris:1 } },
+        { label:"Intense. High highs. Big statements.", pts:{ kanye:3 } },
+        { label:"Over-giving. Loyal. I’ll fix it (I shouldn’t).", pts:{ khloe:2, tristan:1 } },
+        { label:"Messy but charming. I’ll talk my way out.", pts:{ scott:2 } },
+        { label:"Detached. I need space, like… constantly.", pts:{ kendall:2, rob:2 } },
+        { label:"Unbothered partner energy. Calm presence.", pts:{ corey:3 } },
+      ]
+    },
+    {
+      text: "7) Your stress response is…",
+      options: [
+        { label:"Take charge and control the situation.", pts:{ kris:2, kim:2 } },
+        { label:"Spiral, then do a dramatic reset.", pts:{ caitlyn:2, khloe:1 } },
+        { label:"Withdraw and become unavailable.", pts:{ rob:2, kendall:2 } },
+        { label:"Post through it / joke through it.", pts:{ kylie:2, north:1, scott:1 } },
+        { label:"Promise I’ve changed (again).", pts:{ tristan:3 } },
+        { label:"Channel it into discipline and training.", pts:{ bruce:3 } },
+      ]
+    },
+    {
+      text: "8) How do you feel about rules?",
+      options: [
+        { label:"I make them.", pts:{ kris:2, kim:1 } },
+        { label:"I ignore them.", pts:{ kanye:3 } },
+        { label:"I bend them and then act shocked.", pts:{ scott:2, tristan:1 } },
+        { label:"I follow them quietly — structure is calming.", pts:{ bruce:3 } },
+        { label:"I don’t think about them. Ever.", pts:{ north:2, kylie:2 } },
+        { label:"I avoid the whole situation and go offline.", pts:{ rob:2, kendall:2 } },
+      ]
+    },
+    {
+      text: "9) Pick the word that fits you best:",
+      options: [
+        { label:"Mastermind", pts:{ kris:3 } },
+        { label:"Polished", pts:{ kim:3 } },
+        { label:"Visionary", pts:{ kanye:3 } },
+        { label:"Boundary-setting", pts:{ kourtney:3 } },
+        { label:"Ride-or-die", pts:{ khloe:3 } },
+        { label:"Unfiltered", pts:{ north:3 } },
+      ]
+    },
+    {
+      text: "10) Final tie-breaker: choose your vibe (be honest):",
+      // 14 options; gives a heavier push to one person so ties break naturally.
+      options: [
+        { label:"Kris: I’m quietly running this whole operation.", pts:{ kris:5 } },
+        { label:"Kim: I’m the face of the brand, obviously.", pts:{ kim:5 } },
+        { label:"Kanye: I’m built different and you can’t tell me otherwise.", pts:{ kanye:5 } },
+        { label:"North: I say what I want and it’s iconic.", pts:{ north:5 } },
+        { label:"Kourtney: Protect my peace or get away from me.", pts:{ kourtney:5 } },
+        { label:"Scott: Charming, chaotic, and somehow still invited.", pts:{ scott:5 } },
+        { label:"Khloé: Loyal, emotional, and I will carry this family.", pts:{ khloe:5 } },
+        { label:"Tristan: I’m working on myself… (again).", pts:{ tristan:5 } },
+        { label:"Kylie: I’ll be quiet and then drop something huge.", pts:{ kylie:5 } },
+        { label:"Kendall: Low-key. Selective. Don’t perceive me.", pts:{ kendall:5 } },
+        { label:"Rob: Private. Sensitive. Off the grid.", pts:{ rob:5 } },
+        { label:"Corey: Unbothered. Present. Thriving.", pts:{ corey:5 } },
+        { label:"Bruce (Olympic era): Discipline, goals, and winning.", pts:{ bruce:5 } },
+        { label:"Caitlyn (current era): Reinvention and new chapter energy.", pts:{ caitlyn:5 } },
+      ]
+    },
+  ];
+
+  // State
+  let step = 0;
+  const history = []; // store {qIndex, optionIndex} for back button
+  const score = Object.fromEntries(PEOPLE.map(p => [p.id, 0]));
+
+  const content = document.getElementById("content");
+  const counter = document.getElementById("counter");
+  const bar = document.getElementById("bar");
+  const backBtn = document.getElementById("backBtn");
+  const restartBtn = document.getElementById("restartBtn");
+
+  function render() {
+    // If finished, show result
+    if (step >= QUESTIONS.length) return renderResult();
+
+    const q = QUESTIONS[step];
+    counter.textContent = `Question ${step + 1} of ${QUESTIONS.length}`;
+    bar.style.width = `${(step / QUESTIONS.length) * 100}%`;
+
+    const answersHtml = q.options.map((opt, idx) => `
+      <button class="choice" type="button" data-idx="${idx}">${opt.label}</button>
+    `).join("");
+
+    content.innerHTML = `
+      <div class="q">${q.text}</div>
+      <div class="answers">${answersHtml}</div>
+    `;
+
+    // Back button enabled only if history exists
+    backBtn.disabled = history.length === 0;
+
+    // Wire choice buttons
+    content.querySelectorAll("button.choice").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-idx"));
+        // apply points
+        addPoints(score, q.options[idx].pts);
+        history.push({ qIndex: step, optionIndex: idx });
+        step++;
+        render();
+      });
+    });
+  }
+
+  function renderResult() {
+    bar.style.width = "100%";
+    counter.textContent = "Result";
+    backBtn.disabled = history.length === 0;
+
+    // find max
+    let max = -Infinity;
+    for (const pid of Object.keys(score)) max = Math.max(max, score[pid]);
+
+    const tied = Object.keys(score).filter(pid => score[pid] === max);
+
+    // pick winner deterministically: if tie, choose the one with higher tie-breaker influence (Q10 already helps).
+    // If still tied, pick first by PEOPLE order (stable).
+    let winnerId = tied[0];
+    if (tied.length > 1) {
+      const order = PEOPLE.map(p => p.id);
+      winnerId = tied.sort((a,b) => order.indexOf(a) - order.indexOf(b))[0];
+    }
+
+    const w = byId[winnerId];
+
+    // Show top 4 for fun
+    const ranked = Object.entries(score)
+      .sort((a,b) => b[1]-a[1])
+      .slice(0,4)
+      .map(([pid,val]) => ({...byId[pid], pts: val}));
+
+    const topList = ranked.map(r => `
+      <div class="card" style="padding:12px;">
+        <div class="row">
+          <div><strong>${r.name}</strong></div>
+          <div class="pill">${r.pts} pts</div>
+        </div>
+        <div class="small">${r.badge}</div>
+      </div>
+    `).join("");
+
+    content.innerHTML = `
+      <div class="resultTitle">You’re <span style="color:var(--accent)">${w.name}</span> <span class="badge">${w.badge}</span></div>
+      <p class="resultBlurb">${w.blurb}</p>
+
+      <div class="grid2">
+        <div>
+          <div class="pill">Top matches</div>
+          <div style="margin-top:10px; display:grid; gap:10px;">${topList}</div>
+        </div>
+        <div>
+          <div class="pill">What now?</div>
+          <div style="margin-top:10px; color:var(--muted); line-height:1.45;">
+            Screenshot your result and send it to the family group chat. If anyone argues, they’re just proving the result is accurate.
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Back button: remove last answer’s points and step back
+  function undoLast() {
+    if (history.length === 0) return;
+    const last = history.pop();
+    const q = QUESTIONS[last.qIndex];
+    const opt = q.options[last.optionIndex];
+    // subtract points
+    for (const [pid,val] of Object.entries(opt.pts)) score[pid] -= val;
+    step = last.qIndex;
+    render();
+  }
+
+  function restart() {
+    step = 0;
+    history.length = 0;
+    for (const pid of Object.keys(score)) score[pid] = 0;
+    render();
+  }
+
+  backBtn.addEventListener("click", undoLast);
+  restartBtn.addEventListener("click", restart);
+
+  render();
+</script>
+</body>
+</html>
