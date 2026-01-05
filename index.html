@@ -128,34 +128,23 @@
     .small{ font-size:12px; color:var(--muted); margin-top:12px; }
     .cta{ color:var(--muted); line-height:1.45; margin: 0; }
 
-    .resultGrid{
-      display:grid;
-      gap:10px;
-      margin-top:12px;
-    }
-    @media (min-width: 760px){
-      .resultGrid{ grid-template-columns: 1fr 1fr 1fr; }
-    }
     .resultCard{
       padding:12px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.03);
-    }
-    .resultRank{
-      font-size:12px;
-      color: var(--muted);
-      margin-bottom:6px;
+      margin-top:12px;
     }
     .resultName{
-      font-weight:700;
-      margin-bottom:6px;
+      font-weight:800;
+      margin-bottom:8px;
       line-height:1.2;
+      font-size:18px;
     }
     .resultPts{
       font-size:12px;
       color: var(--muted);
-      margin-top:8px;
+      margin-top:10px;
     }
   </style>
 </head>
@@ -184,7 +173,6 @@
   </div>
 
 <script>
-  // --- Results / People ---
   const PEOPLE = [
     { id:"kris",    name:"Kris Jenner",            badge:"Momager Mode",        blurb:"You’re in charge, bossy, demanding… and somehow still lovable. You run the whole operation, and everyone knows it—even if they pretend they don’t." },
     { id:"kim",     name:"Kim Kardashian",         badge:"Savvy & Goal-Oriented", blurb:"You’re smart, talented, and painfully effective. You set a goal, you get it done, and you somehow look rich while doing it." },
@@ -194,7 +182,7 @@
     { id:"scott",   name:"Scott Disick",           badge:"Charismatic Disaster", blurb:"Funny, charismatic, and absolutely an asshole. You’re a chaotic good time with questionable decision-making and strong ‘still invited’ energy." },
     { id:"khloe",   name:"Khloé Kardashian",       badge:"Angel With Bad Boundaries", blurb:"Kind-hearted, lovable, fit, and forgiving to a fault. You keep the peace and give people one too many chances… because you genuinely want everyone okay." },
     { id:"tristan", name:"Tristan Thompson",       badge:"Athletic + Unfaithful", blurb:"Sporty, charming, and absolutely not a reliable partner. You’ve got ‘ladies’ man’ energy and an apology tour stamped into your passport." },
-    { id:"kylie",   name:"Kylie Jenner",           badge:"Trend Setter", blurb:"Youthful, bubbly, popular, and you do your own thing. You set trends, then maybe cancel plans last minute—because vibes changed." },
+    { id:"kylie",   name:"Kylie Jenner",           badge:"Trend Setter",         blurb:"Youthful, bubbly, popular, and you do your own thing. You set trends, then maybe cancel plans last minute—because vibes changed." },
     { id:"kendall", name:"Kendall Jenner",         badge:"Hot + Single + Traveling", blurb:"Snobby, stunning, single, thriving, and always going somewhere. Horse-girl energy meets ‘I have plans’ energy (but not with you)." },
     { id:"rob",     name:"Rob Kardashian",         badge:"Off-the-Grid Hermit",  blurb:"Recluse era. Best years behind you. Baby mama drama. You’re private, withdrawn, and allergic to being perceived." },
     { id:"corey",   name:"Corey Gamble",           badge:"Mysterious Support",   blurb:"Quiet, loyal, supportive, low-key funny, and weirdly likeable. You’re present but never center stage. Somehow you’re thriving and nobody knows why." },
@@ -204,139 +192,127 @@
 
   const byId = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
 
-  // Helper to award points
   function addPoints(score, pts) {
-    for (const [pid, val] of Object.entries(pts)) {
-      score[pid] = (score[pid] || 0) + val;
-    }
+    for (const [pid, val] of Object.entries(pts)) score[pid] = (score[pid] || 0) + val;
   }
 
-  // --- 10 questions (every answer gives points to 2–4 people) ---
-  // Q10 updated to a "description-based" tie-breaker (no names)
   const QUESTIONS = [
     {
-  text: "1) Which animal do you identify with most?",
-  options: [
-    { label:"🦁 Lion: I'm a natural leader and very protective of those I love.", pts:{ kris:3, kim:2, bruce:1 } },
-    { label:"🐍 Snake: I am calculated and savvy.", pts:{ kim:3, kourtney:1, kendall:1 } },
-    { label:"🐒 Monkey: I don't take myself too seriously. I am funny and messy.", pts:{ scott:3, kanye:2, tristan:1 } },
-    { label:"🐈 Black Cat: I am mysterious and often misunderstood", pts:{ kendall:3, kourtney:2, rob:1 } },
-    { label:"🦋 Butterfly: I am a soft presence but get a lot of attention.", pts:{ kylie:3, north:2, kim:1 } },
-    { label:"🐶 Golden Retriever: I am loyal and loving.", pts:{ khloe:3, corey:2, kim:1 } },
-    { label:"🐺 Wolf: I am loyal and independent.", pts:{ caitlyn:3, kendall:1 } },
-    { label:"🐻 Bear: I am a very caring individual, but can come across as emotionally withdrawn.", pts:{ rob:3, kourtney:2, bruce:1 } },
-  ]
-},
-   {
-  text: "2) What’s your perfect date?",
-  options: [
-    { label:"Trying out a new restaurant.", pts:{ kris:3, kim:3, kylie:2, kanye:1 } },
-    { label:"A day at Disney Land", pts:{ kourtney:5, north:2, kylie:1 } },
-    { label:"A football game.", pts:{ bruce:3, tristan:3, kanye:1 } },
-    { label:"A chill movie night in.", pts:{ rob:3, kendall:3, corey:2 } },
-    { label:"An afternoon at a winery.", pts:{ khloe:3, corey:2, kris:1 } },
-    { label:"An arcade", pts:{ scott:3, kanye:2, kylie:1 } },
-    { label:"A fancy cocktail lounge.", pts:{ kendall:2, kim:1, kylie:1 } },
-  ]
-},
-    {
-  text: "3) What is your most toxic trait?",
-  options: [
-    { label:"I can come off as rude or blunt when I talk to people.", pts:{ kris:3, bruce:3, kourtney:1 } },
-    { label:"People think I am oblivious and out of touch.", pts:{ kim:3, kylie:3, kendall:1 } },
-    { label:"I tend to be judgmental.", pts:{ kourtney:3, north:2, kendall:1 } },
-    { label:"I can be selfish and don’t always think about how my actions affect others.", pts:{ scott:3, kanye:2, tristan:2 } },
-    { label:"I stir up drama while trying to help or protect people.", pts:{ khloe:3, kris:1, corey:1 } },
-    { label:"I’m flaky and disappear when things get uncomfortable.", pts:{ kendall:3, rob:3, corey:1 } },
-    { label:"I don’t apologize properly to others, and hope they just move on.", pts:{ caitlyn:3, kanye:1, rob:1 } },
-  ]
-},
-    {
-  text: "4) What is your phone wallpaper right now?",
-  options: [
-    { label:"A photo of myself.", pts:{ kim:3, kylie:3, kendall:2, north:1 } },
-    { label:"My significant other (or family/kids).", pts:{ khloe:3, kourtney:2, corey:2, kris:1 } },
-    { label:"My pet.", pts:{ rob:3, kendall:2, khloe:1 } },
-    { label:"A landscape / aesthetic photo.", pts:{ kendall:3, kourtney:2, caitlyn:1 } },
-    { label:"The default iPhone background.", pts:{ bruce:3, tristan:2, kanye:1 } },
-  ]
-},
-   {
-  text: "5) What is your favorite reality TV show?",
-  options: [
-    { label:"Secret Lives of Mormon Wives", pts:{ khloe:3, scott:3, kylie:1, north:1 } },
-    { label:"90 Day Fiance", pts:{ kim:3, kylie:2, kendall:2 } },
-    { label:"Dance Moms", pts:{ kris:3, corey:2, kanye:2 } },
-    { label:"1000-lb Sisters", pts:{ rob:3 } },
-    { label:"RuPaul’s Drag Race", pts:{ caitlyn:3, kylie:1, kendall:1 } },
-    { label:"I don’t really watch reality TV", pts:{ bruce:3, kourtney:3, tristan:2 } 
+      text: "1) Which animal do you identify with most?",
+      options: [
+        { label:"🦁 Lion: I'm a natural leader and very protective of those I love.", pts:{ kris:3, kim:2, bruce:1 } },
+        { label:"🐍 Snake: I am calculated and savvy.", pts:{ kim:3, kourtney:1, kendall:1 } },
+        { label:"🐒 Monkey: I don't take myself too seriously. I am funny and messy.", pts:{ scott:3, kanye:2, tristan:1 } },
+        { label:"🐈 Black Cat: I am mysterious and often misunderstood", pts:{ kendall:3, kourtney:2, rob:1 } },
+        { label:"🦋 Butterfly: I am a soft presence but get a lot of attention.", pts:{ kylie:3, north:2, kim:1 } },
+        { label:"🐶 Golden Retriever: I am loyal and loving.", pts:{ khloe:3, corey:2, kim:1 } },
+        { label:"🐺 Wolf: I am loyal and independent.", pts:{ caitlyn:3, kendall:2 } },
+        { label:"🐻 Bear: I am a very caring individual, but can come across as emotionally withdrawn.", pts:{ rob:3, kourtney:2, bruce:1 } },
+      ]
     },
-  ]
-},
-
     {
-  text: "6) What is your best physical feature?",
-  options: [
-    { label:"My body.", pts:{ kim:3, kylie:3, kendall:1 } },
-    { label:"My muscles / athletic build.", pts:{ kendall:3, bruce:3, tristan:3 } },
-    { label:"My smile.", pts:{ khloe:3, kris:2, scott:1 } },
-    { label:"My hair.", pts:{ kourtney:3, kim:1 } },
-    { label:"My presence / personality. It’s more about the vibe than the looks for me.", pts:{ kanye:3, corey:2, north:2, caitlyn:1 } },
-    { label:"Honestly… I don't care about looks.", pts:{ rob:3, caitlyn:2 } },
-  ]
-},
-
+      text: "2) What’s your perfect date?",
+      options: [
+        { label:"Trying out a new restaurant.", pts:{ kris:3, kim:3, kylie:2, kanye:1 } },
+        { label:"A day at Disney Land", pts:{ kourtney:3, north:2, kylie:1 } },
+        { label:"A football game.", pts:{ bruce:3, tristan:3, kanye:1 } },
+        { label:"A chill movie night in.", pts:{ rob:3, kendall:3, corey:2 } },
+        { label:"An afternoon at a winery.", pts:{ khloe:3, corey:2, kris:1 } },
+        { label:"An arcade", pts:{ scott:3, kanye:2, kylie:1 } },
+        { label:"A fancy cocktail lounge.", pts:{ kendall:3, kim:2, kylie:2 } },
+      ]
+    },
     {
-  text: "7) What is your dream job?",
-  options: [
-    { label:"Fitness instructor / personal trainer.", pts:{ khloe:3, bruce:3, kendall:3} },
-    { label:"Football coach.", pts:{ bruce:3, tristan:3 } },
-    { label:"Chef.", pts:{ kylie:3, rob:3, corey:1 } },
-    { label:"Lawyer.", pts:{ kim:3, kris:3} },
-    { label:"Social media influencer", pts:{ north:3, kylie:3, kourtney:2 } },
-    { label:"Painter.", pts:{ kanye:3, scott:2, caitlyn:2 } },
-  ]
-},
-
-   {
-  text: "8) What is your favorite salad topping?",
-  options: [
-    { label:"Croutons.", pts:{ rob:3, scott:2, north:1 } },
-    { label:"Nuts and seeds.", pts:{ kendall:3, corey:2, caitlyn:1 } },
-    { label:"Cheese.", pts:{ kris:3, kylie:3, scott:1 } },
-    { label:"Chicken or tofu.", pts:{ khloe:3, bruce:3, kendall:3 } },
-    { label:"Extra veggies.", pts:{ kourtney:3, kendall:1, kim:1 } },
-  ]
-},
+      text: "3) What is your most toxic trait?",
+      options: [
+        { label:"I can come off as rude or blunt when I talk to people.", pts:{ kris:3, bruce:3, kourtney:1 } },
+        { label:"People think I am oblivious and out of touch.", pts:{ kim:3, kylie:3, kendall:1 } },
+        { label:"I tend to be judgmental.", pts:{ kourtney:3, north:2, kendall:1 } },
+        { label:"I can be selfish and don’t always think about how my actions affect others.", pts:{ scott:3, kanye:2, tristan:2 } },
+        { label:"I stir up drama while trying to help or protect people.", pts:{ khloe:3, kris:1, corey:1 } },
+        { label:"I’m flaky and disappear when things get uncomfortable.", pts:{ kendall:3, rob:3, corey:1 } },
+        { label:"I don’t apologize properly to others, and hope they just move on.", pts:{ caitlyn:3, kanye:1, rob:1 } },
+      ]
+    },
     {
-  text: "9) What is an ideal birthday gift for you?",
-  options: [
-    { label:"Classic jewelry.", pts:{ kris:2, kim:3, kylie:2, caitlyn:1 } },
-    { label:"Home decor.", pts:{ kendall:3, kourtney:3, kim:1 } },
-    { label:"Something cozy — robe, slippers, candle, blanket.", pts:{ rob:3, corey:3, khloe:1 } },
-    { label:"An experience: trip, concert, event, something memorable.", pts:{ khloe:3, kris:2, scott:1 } },
-    { label:"Tech or gadgets I’ll actually use.", pts:{ kendall:2, kanye:2, bruce:1 } },
-    { label:"Tickets to something — game, show, or event.", pts:{ tristan:3, scott:2, north:1 } },
-  ]
-},
-
+      text: "4) What is your phone wallpaper right now?",
+      options: [
+        { label:"A photo of myself.", pts:{ kim:3, kylie:3, kendall:2, north:1 } },
+        { label:"My significant other (or family/kids).", pts:{ khloe:3, kourtney:2, corey:2, kris:1 } },
+        { label:"My pet.", pts:{ rob:3, kendall:2, khloe:1 } },
+        { label:"A landscape / aesthetic photo.", pts:{ kendall:3, kourtney:2, caitlyn:1 } },
+        { label:"The default iPhone background.", pts:{ bruce:3, tristan:2, kanye:1 } },
+      ]
+    },
     {
-  text: "10) What is your favorite fast food?",
-  options: [
-    { label:"McDonald’s.", pts:{ kim:3, rob:3, scott:1 } },
-    { label:"Taco Bell.", pts:{ kylie:3, north:3, kendall:1 } },
-    { label:"Subway.", pts:{ caitlyn:3, bruce:1 } },
-    { label:"Chipotle.", pts:{ khloe:3, scott:3, tristan:3 } },
-    { label:"Panera.", pts:{ kendall:3, kourtney:3, bruce:2 } },
-    { label:"Papa John’s.", pts:{ rob:2, tristan:2, corey:3 } },
-  ]
-},
-
+      text: "5) What is your favorite reality TV show?",
+      options: [
+        { label:"Secret Lives of Mormon Wives", pts:{ khloe:3, scott:3, kylie:1, north:1 } },
+        { label:"90 Day Fiance", pts:{ kim:3, kylie:2, kendall:2 } },
+        { label:"Dance Moms", pts:{ kris:3, corey:2, kanye:2 } },
+        { label:"1000-lb Sisters", pts:{ rob:3 } },
+        { label:"RuPaul’s Drag Race", pts:{ caitlyn:3, kylie:1, kendall:1 } },
+        { label:"I don’t really watch reality TV", pts:{ bruce:3, kourtney:3, tristan:2 } },
+      ]
+    },
+    {
+      text: "6) What is your best physical feature?",
+      options: [
+        { label:"My body.", pts:{ kim:3, kylie:3, kendall:1 } },
+        { label:"My muscles / athletic build.", pts:{ kendall:3, bruce:3, tristan:3 } },
+        { label:"My smile.", pts:{ khloe:3, kris:2, scott:1 } },
+        { label:"My hair.", pts:{ kourtney:3, kim:1 } },
+        { label:"My presence / personality. It’s more about the vibe than the looks for me.", pts:{ kanye:3, corey:2, north:2, caitlyn:1 } },
+        { label:"Honestly… I don't care about looks.", pts:{ rob:3, caitlyn:2 } },
+      ]
+    },
+    {
+      text: "7) What is your dream job?",
+      options: [
+        { label:"Fitness instructor / personal trainer.", pts:{ khloe:2, bruce:3, kendall:3 } },
+        { label:"Football coach.", pts:{ bruce:3, tristan:2 } },
+        { label:"Chef.", pts:{ kylie:3, rob:3, corey:1 } },
+        { label:"Lawyer.", pts:{ kim:3, kris:3 } },
+        { label:"Social media influencer", pts:{ north:3, kylie:3, kourtney:2 } },
+        { label:"Painter.", pts:{ kanye:3, scott:2, caitlyn:2 } },
+      ]
+    },
+    {
+      text: "8) What is your favorite salad topping?",
+      options: [
+        { label:"Croutons.", pts:{ rob:3, scott:2, north:1 } },
+        { label:"Nuts and seeds.", pts:{ kendall:3, corey:2, caitlyn:1 } },
+        { label:"Cheese.", pts:{ kris:3, kylie:3, scott:1 } },
+        { label:"Chicken or tofu.", pts:{ khloe:3, bruce:3, kendall:3 } },
+        { label:"Extra veggies.", pts:{ kourtney:3, kendall:1, kim:1 } },
+      ]
+    },
+    {
+      text: "9) What is an ideal birthday gift for you?",
+      options: [
+        { label:"Classic jewelry.", pts:{ kris:2, kim:3, kylie:2, caitlyn:1 } },
+        { label:"Home decor.", pts:{ kendall:3, kourtney:3, kim:1 } },
+        { label:"Something cozy — robe, slippers, candle, blanket.", pts:{ rob:3, corey:3, khloe:1 } },
+        { label:"An experience: trip, concert, event, something memorable.", pts:{ khloe:3, kris:2, scott:1 } },
+        { label:"Tech or gadgets I’ll actually use.", pts:{ kendall:2, kanye:2, bruce:1 } },
+        { label:"Tickets to something — game, show, or event.", pts:{ tristan:3, scott:2, north:1 } },
+      ]
+    },
+    {
+      text: "10) What is your favorite fast food?",
+      options: [
+        { label:"McDonald’s.", pts:{ kim:3, rob:3, scott:1 } },
+        { label:"Taco Bell.", pts:{ kylie:3, north:3, kendall:1 } },
+        { label:"Subway.", pts:{ caitlyn:3, bruce:1 } },
+        { label:"Chipotle.", pts:{ khloe:2, scott:3, tristan:2 } },
+        { label:"Panera.", pts:{ kendall:3, kourtney:3, bruce:2 } },
+        { label:"Papa John’s.", pts:{ rob:2, tristan:2, corey:3 } },
+      ]
+    },
   ];
 
-  // --- State ---
   let step = 0;
-  const history = []; // store {qIndex, optionIndex} for back button
+  const history = [];
   const score = Object.fromEntries(PEOPLE.map(p => [p.id, 0]));
 
   const content = document.getElementById("content");
@@ -379,31 +355,23 @@
     counter.textContent = "Result";
     backBtn.disabled = history.length === 0;
 
-    // Rank everyone by score (desc), stable tie-break by PEOPLE order
+    // Winner = highest score; tie-breaker = PEOPLE order
     const order = PEOPLE.map(p => p.id);
     const ranked = Object.entries(score)
       .map(([pid, pts]) => ({ pid, pts, order: order.indexOf(pid) }))
       .sort((a,b) => (b.pts - a.pts) || (a.order - b.order));
 
-    const top3 = ranked.slice(0, 3).map((r, i) => {
-      const p = byId[r.pid];
-      const rankLabel = i === 0 ? "Top Match" : (i === 1 ? "Runner Up" : "Third Place");
-      return `
-        <div class="resultCard">
-          <div class="resultRank">${rankLabel}</div>
-          <div class="resultName">${p.name}<span class="badge">${p.badge}</span></div>
-          <div class="resultBlurb">${p.blurb}</div>
-          <div class="resultPts">${r.pts} pts</div>
-        </div>
-      `;
-    }).join("");
+    const winner = ranked[0];
+    const p = byId[winner.pid];
 
     content.innerHTML = `
-      <div class="resultTitle">Your Top 3 Matches</div>
-      <p class="resultBlurb">Your #1 is the closest match, but the other two are definitely in your mix. (Argue in the group chat accordingly.)</p>
+      <div class="resultTitle">You’re <span style="color:var(--accent)">${p.name}</span><span class="badge">${p.badge}</span></div>
+      <p class="resultBlurb">${p.blurb}</p>
 
-      <div class="resultGrid">
-        ${top3}
+      <div class="resultCard">
+        <div class="resultName">Top Match</div>
+        <div class="resultBlurb">${p.name}</div>
+        <div class="resultPts">${winner.pts} pts</div>
       </div>
 
       <div class="divider"></div>
@@ -439,4 +407,3 @@
 </script>
 </body>
 </html>
-
