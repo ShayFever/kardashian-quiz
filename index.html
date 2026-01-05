@@ -146,15 +146,31 @@
       color: var(--muted);
       margin-top:10px;
     }
-    .resultImg{width:100%;max-width:420px;aspect-ratio:4/3;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.14);margin:12px 0;display:block;}
-
+    .resultImg{
+      width:100%;
+      max-width:420px;
+      aspect-ratio:4/3;
+      object-fit:cover;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      margin:12px 0;
+      display:block;
+    }
+    .imgFallback{
+      margin: 12px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px dashed rgba(255,255,255,.18);
+      color: var(--muted);
+      font-size: 13px;
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
     <h1 class="title">Shayna & Lacey Kardashian Quiz</h1>
-    
+
     <div class="card" id="card">
       <div class="row">
         <div class="pill" id="counter">Question 1 of 10</div>
@@ -175,20 +191,20 @@
 
 <script>
   const PEOPLE = [
-    { id:"kris",    name:"Kris Jenner",            badge:"Momager Mode",        blurb:"You’re in charge, bossy, demanding… and somehow still lovable. You run the whole operation, and everyone knows it—even if they pretend they don’t.",img:"images/kris.jpg" },
-    { id:"kim",     name:"Kim Kardashian",         badge:"Savvy & Goal-Oriented", blurb:"You’re smart, talented, and painfully effective. You set a goal, you get it done, and you somehow look rich while doing it.",img:"images/kim.jpg" },
-    { id:"kanye",   name:"Kanye West",             badge:"Chaos + Grand Gestures", blurb:"You’re thoughtful in a dramatic way: big gifts, big swings, big moods. People never know which version they’re getting—and that’s… part of the experience.",img:"images/kanye.jpg" },
-    { id:"north",   name:"North West",             badge:"Unfiltered Icon",      blurb:"Trendy, fashionable, brutally honest, and a little mean. You’re youthful chaos with taste. People fear you and respect you.",img:"images/north.jpg" },
-    { id:"kourtney",name:"Kourtney Kardashian",    badge:"Morally Superior Energy", blurb:"You think you’re better than everyone. You isolate, get miserable, lose yourself in relationships, and still somehow judge everyone else.",img:"images/kourtney.png" },
-    { id:"scott",   name:"Scott Disick",           badge:"Charismatic Disaster", blurb:"Funny, charismatic, and absolutely an asshole. You’re a chaotic good time with questionable decision-making and strong ‘still invited’ energy.",img:"images/scott.jpg" },
-    { id:"khloe",   name:"Khloé Kardashian",       badge:"Angel With Bad Boundaries", blurb:"Kind-hearted, lovable, fit, and forgiving to a fault. You keep the peace and give people one too many chances… because you genuinely want everyone okay.",img:"images/khloe.jpg" },
-    { id:"tristan", name:"Tristan Thompson",       badge:"Athletic + Unfaithful", blurb:"Sporty, charming, and absolutely not a reliable partner. You’ve got ‘ladies’ man’ energy and an apology tour stamped into your passport.",img:"images/tristan.jpg" },
-    { id:"kylie",   name:"Kylie Jenner",           badge:"Trend Setter",         blurb:"Youthful, bubbly, popular, and you do your own thing. You set trends, then maybe cancel plans last minute—because vibes changed.",img:"images/kylie.jpg" },
-    { id:"kendall", name:"Kendall Jenner",         badge:"Hot + Single + Traveling", blurb:"Snobby, stunning, single, thriving, and always going somewhere. Horse-girl energy meets ‘I have plans’ energy (but not with you).",img:"images/kendall.jpg" },
-    { id:"rob",     name:"Rob Kardashian",         badge:"Off-the-Grid Hermit",  blurb:"Recluse era. Best years behind you. Baby mama drama. You’re private, withdrawn, and allergic to being perceived.",img:"images/rob.jpg" },
-    { id:"corey",   name:"Corey Gamble",           badge:"Mysterious Support",   blurb:"Quiet, loyal, supportive, low-key funny, and weirdly likeable. You’re present but never center stage. Somehow you’re thriving and nobody knows why.",img:"images/corey.jpg" },
-    { id:"bruce",   name:"Bruce (Olympic Era)",    badge:"Strict Olympian Energy", blurb:"Athletic, dedicated, strict, and critical. You like being in charge… but you’re not always the strongest leader. Still: discipline is the personality.",img:"images/bruce.jpg" },
-    { id:"caitlyn", name:"Caitlyn (Current Era)",  badge:"Does Her Own Thing",   blurb:"You say what you want, talk your shit, and show up occasionally like nothing happened. You’ve become who you want to be—and the family’s… complicated about it.",img:"images/caitlyn.jpg" },
+    { id:"kris",    name:"Kris Jenner",            badge:"Momager Mode",           blurb:"You’re in charge, bossy, demanding… and somehow still lovable. You run the whole operation, and everyone knows it—even if they pretend they don’t.", img:"images/kris.jpg" },
+    { id:"kim",     name:"Kim Kardashian",         badge:"Savvy & Goal-Oriented",  blurb:"You’re smart, talented, and painfully effective. You set a goal, you get it done, and you somehow look rich while doing it.", img:"images/kim.jpg" },
+    { id:"kanye",   name:"Kanye West",             badge:"Chaos + Grand Gestures", blurb:"You’re thoughtful in a dramatic way: big gifts, big swings, big moods. People never know which version they’re getting—and that’s… part of the experience.", img:"images/kanye.jpg" },
+    { id:"north",   name:"North West",             badge:"Unfiltered Icon",        blurb:"Trendy, fashionable, brutally honest, and a little mean. You’re youthful chaos with taste. People fear you and respect you.", img:"images/north.jpg" },
+    { id:"kourtney",name:"Kourtney Kardashian",    badge:"Morally Superior Energy",blurb:"You think you’re better than everyone. You isolate, get miserable, lose yourself in relationships, and still somehow judge everyone else.", img:"images/kourtney.png" },
+    { id:"scott",   name:"Scott Disick",           badge:"Charismatic Disaster",   blurb:"Funny, charismatic, and absolutely an asshole. You’re a chaotic good time with questionable decision-making and strong ‘still invited’ energy.", img:"images/scott.jpg" },
+    { id:"khloe",   name:"Khloé Kardashian",       badge:"Angel With Bad Boundaries", blurb:"Kind-hearted, lovable, fit, and forgiving to a fault. You keep the peace and give people one too many chances… because you genuinely want everyone okay.", img:"images/khloe.jpg" },
+    { id:"tristan", name:"Tristan Thompson",       badge:"Athletic + Unfaithful",  blurb:"Sporty, charming, and absolutely not a reliable partner. You’ve got ‘ladies’ man’ energy and an apology tour stamped into your passport.", img:"images/tristan.jpg" },
+    { id:"kylie",   name:"Kylie Jenner",           badge:"Trend Setter",           blurb:"Youthful, bubbly, popular, and you do your own thing. You set trends, then maybe cancel plans last minute—because vibes changed.", img:"images/kylie.jpg" },
+    { id:"kendall", name:"Kendall Jenner",         badge:"Hot + Single + Traveling", blurb:"Snobby, stunning, single, thriving, and always going somewhere. Horse-girl energy meets ‘I have plans’ energy (but not with you).", img:"images/kendall.jpg" },
+    { id:"rob",     name:"Rob Kardashian",         badge:"Off-the-Grid Hermit",    blurb:"Recluse era. Best years behind you. Baby mama drama. You’re private, withdrawn, and allergic to being perceived.", img:"images/rob.jpg" },
+    { id:"corey",   name:"Corey Gamble",           badge:"Mysterious Support",     blurb:"Quiet, loyal, supportive, low-key funny, and weirdly likeable. You’re present but never center stage. Somehow you’re thriving and nobody knows why.", img:"images/corey.jpg" },
+    { id:"bruce",   name:"Bruce (Olympic Era)",    badge:"Strict Olympian Energy", blurb:"Athletic, dedicated, strict, and critical. You like being in charge… but you’re not always the strongest leader. Still: discipline is the personality.", img:"images/bruce.jpg" },
+    { id:"caitlyn", name:"Caitlyn (Current Era)",  badge:"Does Her Own Thing",     blurb:"You say what you want, talk your shit, and show up occasionally like nothing happened. You’ve become who you want to be—and the family’s… complicated about it.", img:"images/caitlyn.jpg" },
   ];
 
   const byId = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
@@ -334,9 +350,8 @@
     `).join("");
 
     content.innerHTML = `
-      <div class="resultTitle">You’re <span style="color:var(--accent)">${p.name}</span><span class="badge">${p.badge}</span></div>
-      ${p.img ? `<img class="resultImg" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ``}
-      <p class="resultBlurb">${p.blurb}</p>
+      <div class="q">${q.text}</div>
+      <div class="answers">${answersHtml}</div>
     `;
 
     backBtn.disabled = history.length === 0;
@@ -357,7 +372,6 @@
     counter.textContent = "Result";
     backBtn.disabled = history.length === 0;
 
-    // Winner = highest score; tie-breaker = PEOPLE order
     const order = PEOPLE.map(p => p.id);
     const ranked = Object.entries(score)
       .map(([pid, pts]) => ({ pid, pts, order: order.indexOf(pid) }))
@@ -368,6 +382,12 @@
 
     content.innerHTML = `
       <div class="resultTitle">You’re <span style="color:var(--accent)">${p.name}</span><span class="badge">${p.badge}</span></div>
+
+      ${p.img ? `
+        <img class="resultImg" src="${p.img}" alt="${p.name}"
+          onerror="this.insertAdjacentHTML('afterend','<div class=&quot;imgFallback&quot;>Image not found: <b>${p.img}</b><br>Check the file name + folder path in GitHub (case-sensitive).</div>'); this.remove();">
+      ` : ``}
+
       <p class="resultBlurb">${p.blurb}</p>
 
       <div class="resultCard">
