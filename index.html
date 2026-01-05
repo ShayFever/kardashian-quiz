@@ -215,104 +215,111 @@
   // Q10 updated to a "description-based" tie-breaker (no names)
   const QUESTIONS = [
     {
-      text: "1) When plans fall apart, what’s your instinct?",
-      options: [
-        { label:"Take over immediately. Fix it. Delegate. (Even if nobody asked.)", pts:{ kris:3, kim:2, bruce:1 } },
-        { label:"Pivot calmly and make the smartest move so you still ‘win.’", pts:{ kim:3, kris:1, kendall:1 } },
-        { label:"Say something unhinged and derail the entire situation.", pts:{ kanye:3, north:2, scott:1 } },
-        { label:"Judge everyone silently and act like you’re above it.", pts:{ kourtney:3, kendall:1, rob:1 } },
-        { label:"Disappear. If you need me, schedule it.", pts:{ rob:3, kendall:2, corey:1 } },
-        { label:"Gossip about it with your friends.", pts:{ kylie:3, north:2, kim:1 } },
-      ]
-    },
+  text: "1) Which animal do you identify with most?",
+  options: [
+    { label:"🦁 Lion: I'm a natural leader and very protective of those I love.", pts:{ kris:3, kim:2, bruce:1 } },
+    { label:"🐍 Snake: I am calculated and savvy.", pts:{ kim:3, kourtney:1, kendall:1 } },
+    { label:"🐒 Monkey: I don't take myself too seriously. I am funny and messy.", pts:{ scott:3, kanye:2, tristan:1 } },
+    { label:"🐈 Black Cat: I am mysterious and often misunderstood", pts:{ kendall:3, kourtney:2, rob:1 } },
+    { label:"🦋 Butterfly: I am a soft presence but get a lot of attention.", pts:{ kylie:3, north:2, kim:1 } },
+    { label:"🐶 Golden Retriever: I am loyal and loving.", pts:{ khloe:3, corey:2, kim:1 } },
+    { label:"🐺 Wolf: I am loyal and independent.", pts:{ caitlyn:3, kendall:1 } },
+    { label:"🐻 Bear: I am a very caring individual, but can come across as emotionally withdrawn.", pts:{ rob:3, kourtney:2, bruce:1 } },
+  ]
+},
+   {
+  text: "2) What’s your perfect date?",
+  options: [
+    { label:"Trying out a new restaurant.", pts:{ kris:3, kim:3, kylie:2, kanye:1 } },
+    { label:"A day at Disney Land", pts:{ kourtney:5, north:2, kylie:1 } },
+    { label:"A football game.", pts:{ bruce:3, tristan:3, kanye:1 } },
+    { label:"A chill movie night in.", pts:{ rob:3, kendall:3, corey:2 } },
+    { label:"An afternoon at a winery.", pts:{ khloe:3, corey:2, kris:1 } },
+    { label:"An arcade", pts:{ scott:3, kanye:2, kylie:1 } },
+    { label:"A fancy cocktail lounge.", pts:{ kendall:2, kim:1, kylie:1 } },
+  ]
+},
     {
-      text: "2) Your group-chat energy is…",
-      options: [
-        { label:"Pinned messages, reminders, and passive-aggressive follow-ups.", pts:{ kris:3, kim:1, bruce:1 } },
-        { label:"I send 1 message every 3 months and it’s somehow iconic.", pts:{ kendall:2, rob:2, corey:1 } },
-        { label:"I’m funny and messy and everyone still invites me.", pts:{ scott:3, kylie:1, tristan:1 } },
-        { label:"I’m the peacekeeper / therapist and it’s exhausting.", pts:{ khloe:3, corey:1, kourtney:1 } },
-        { label:"I start discourse and then vanish.", pts:{ kanye:3, north:1, caitlyn:1 } },
-        { label:"I post, I trend, I influence.", pts:{ kylie:3, north:2, kendall:1 } },
-      ]
-    },
+  text: "3) What is your most toxic trait?",
+  options: [
+    { label:"I can come off as rude or blunt when I talk to people.", pts:{ kris:3, bruce:3, kourtney:1 } },
+    { label:"People think I am oblivious and out of touch.", pts:{ kim:3, kylie:3, kendall:1 } },
+    { label:"I tend to be judgmental.", pts:{ kourtney:3, north:2, kendall:1 } },
+    { label:"I can be selfish and don’t always think about how my actions affect others.", pts:{ scott:3, kanye:2, tristan:2 } },
+    { label:"I stir up drama while trying to help or protect people.", pts:{ khloe:3, kris:1, corey:1 } },
+    { label:"I’m flaky and disappear when things get uncomfortable.", pts:{ kendall:3, rob:3, corey:1 } },
+    { label:"I don’t apologize properly to others, and hope they just move on.", pts:{ caitlyn:3, kanye:1, rob:1 } },
+  ]
+},
     {
-      text: "3) Your relationship history is best described as…",
-      options: [
-        { label:"Loyal to a fault. Forgiving. Regrettably patient.", pts:{ khloe:3, corey:1, kim:1 } },
-        { label:"Complicated… but I’m charismatic so it’s fine.", pts:{ scott:3, tristan:1, kylie:1 } },
-        { label:"I think I’m above everyone and still somehow lose myself in it.", pts:{ kourtney:3, kendall:1, rob:1 } },
-        { label:"Athletic, charming, and absolutely not faithful.", pts:{ tristan:3, scott:1, kanye:1 } },
-        { label:"Single, thriving, lots of friends, lots of travel.", pts:{ kendall:3, kim:1, kylie:1 } },
-        { label:"Intense highs, intense lows, dramatic gestures, dramatic fights.", pts:{ kanye:3, kim:1, caitlyn:1 } },
-      ]
+  text: "4) What is your phone wallpaper right now?",
+  options: [
+    { label:"A photo of myself.", pts:{ kim:3, kylie:3, kendall:2, north:1 } },
+    { label:"My significant other (or family/kids).", pts:{ khloe:3, kourtney:2, corey:2, kris:1 } },
+    { label:"My pet.", pts:{ rob:3, kendall:2, khloe:1 } },
+    { label:"A landscape / aesthetic photo.", pts:{ kendall:3, kourtney:2, caitlyn:1 } },
+    { label:"The default iPhone background.", pts:{ bruce:3, tristan:2, kanye:1 } },
+  ]
+},
+   {
+  text: "5) What is your favorite reality TV show?",
+  options: [
+    { label:"Secret Lives of Mormon Wives", pts:{ khloe:3, scott:3, kylie:1, north:1 } },
+    { label:"90 Day Fiance", pts:{ kim:3, kylie:2, kendall:2 } },
+    { label:"Dance Moms", pts:{ kris:3, corey:2, kanye:2 } },
+    { label:"1000-lb Sisters", pts:{ rob:3 } },
+    { label:"RuPaul’s Drag Race", pts:{ caitlyn:3, kylie:1, kendall:1 } },
+    { label:"I don’t really watch reality TV", pts:{ bruce:3, kourtney:3, tristan:2 } 
     },
+  ]
+},
+
     {
-      text: "4) At a party, you’re usually…",
-      options: [
-        { label:"Holding court with a drink and subtle authority.", pts:{ kris:3, corey:2, kim:1 } },
-        { label:"Making a perfect entrance and leaving early.", pts:{ kim:3, kendall:1, kylie:1 } },
-        { label:"Funny, chaotic, and probably intoxicated.", pts:{ scott:3, tristan:1, north:1 } },
-        { label:"Saying something shocking and killing the vibe.", pts:{ kanye:3, caitlyn:1, north:1 } },
-        { label:"Quietly observing and still somehow popular.", pts:{ kendall:3, corey:1, rob:1 } },
-        { label:"Not there. Nobody knows where I am.", pts:{ rob:3, kourtney:1, kendall:1 } },
-      ]
-    },
+  text: "6) What is your best physical feature?",
+  options: [
+    { label:"My body.", pts:{ kim:3, kylie:3, kendall:1 } },
+    { label:"My muscles / athletic build.", pts:{ kendall:3, bruce:3, tristan:3 } },
+    { label:"My smile.", pts:{ khloe:3, kris:2, scott:1 } },
+    { label:"My hair.", pts:{ kourtney:3, kim:1 } },
+    { label:"My presence / personality. It’s more about the vibe than the looks for me.", pts:{ kanye:3, corey:2, north:2, caitlyn:1 } },
+    { label:"Honestly… I don't care about looks.", pts:{ rob:3, caitlyn:2 } },
+  ]
+},
+
     {
-      text: "5) Which statement best describes you?",
-      options: [
-        { label:"Strict, athletic, critical, and weirdly competitive about everything.", pts:{ bruce:3, kim:1, kris:1 } },
-        { label:"Fit, kind-hearted, and carrying everyone emotionally.", pts:{ khloe:3, corey:1, kourtney:1 } },
-        { label:"Trendy, bubbly, and I might cancel last minute.", pts:{ kylie:3, kendall:1, north:1 } },
-        { label:"My best years are behind me and I refuse to be perceived.", pts:{ rob:3, kendall:1, scott:1 } },
-        { label:"I’m reinventing myself again. New era, new chaos.", pts:{ caitlyn:3, kanye:1, kim:1 } },
-        { label:"I’m youthful, fashionable, too honest, and a little mean.", pts:{ north:3, kylie:2, kendall:1 } },
-      ]
-    },
+  text: "7) What is your dream job?",
+  options: [
+    { label:"Fitness instructor / personal trainer.", pts:{ khloe:3, bruce:3, kendall:3} },
+    { label:"Football coach.", pts:{ bruce:3, tristan:3 } },
+    { label:"Chef.", pts:{ kylie:3, rob:3, corey:1 } },
+    { label:"Lawyer.", pts:{ kim:3, kris:3} },
+    { label:"Social media influencer", pts:{ north:3, kylie:3, kourtney:2 } },
+    { label:"Painter.", pts:{ kanye:3, scott:2, caitlyn:2 } },
+  ]
+},
+
+   {
+  text: "8) What is your favorite salad topping?",
+  options: [
+    { label:"Croutons.", pts:{ rob:3, scott:2, north:1 } },
+    { label:"Nuts and seeds.", pts:{ kendall:3, corey:2, caitlyn:1 } },
+    { label:"Cheese.", pts:{ kris:3, kylie:3, scott:1 } },
+    { label:"Chicken or tofu.", pts:{ khloe:3, bruce:3, kendall:3 } },
+    { label:"Extra veggies.", pts:{ kourtney:3, kendall:1, kim:1 } },
+  ]
+},
     {
-      text: "6) In your family, you are the one who…",
-      options: [
-        { label:"Takes charge but is still lovable.", pts:{ kris:3, kim:1, bruce:1 } },
-        { label:"Keeps the peace and forgives people who don’t deserve it.", pts:{ khloe:3, corey:1, kim:1 } },
-        { label:"Is ‘around’ but kind of on the fringes.", pts:{ rob:2, caitlyn:2, kendall:1 } },
-        { label:"Shows up occasionally and causes tension.", pts:{ caitlyn:3, kanye:1, kourtney:1 } },
-        { label:"Is low-key supportive and mysteriously likeable.", pts:{ corey:3, kendall:1, khloe:1 } },
-        { label:"Thinks they’re better than everyone and isolates.", pts:{ kourtney:3, kendall:1, rob:1 } },
-      ]
-    },
-    {
-      text: "7) Your relationship with attention is…",
-      options: [
-        { label:"I love attention and it always finds me.", pts:{ kim:3, kris:2, kendall:1 } },
-        { label:"I crave it, but only on my terms.", pts:{ kanye:3, north:1, caitlyn:1 } },
-        { label:"I thrive in it.", pts:{ kylie:3, north:2, kim:1 } },
-        { label:"I avoid it whenever possible.", pts:{ rob:3, kendall:2, kourtney:1 } },
-        { label:"I don’t need it. I’m just… present.", pts:{ corey:3, kendall:1, khloe:1 } },
-        { label:"I love it, but I also hate everyone about it.", pts:{ kourtney:2, kim:1, kendall:1 } },
-      ]
-    },
-    {
-      text: "8) Pick the statement that’s most true for you:",
-      options: [
-        { label:"I’m bossy and demanding but people still love me.", pts:{ kris:3, kim:1, bruce:1 } },
-        { label:"I’m thoughtful sometimes… and then absolutely chaotic.", pts:{ kanye:3, scott:1, kim:1 } },
-        { label:"I’m kind-hearted. I want peace. I also hold grudges quietly.", pts:{ khloe:2, corey:1, kourtney:1 } },
-        { label:"I’m popular, fashionable, and I will be brutally honest.", pts:{ north:3, kylie:1, kendall:1 } },
-        { label:"I’m snobby, hot, single, and always traveling.", pts:{ kendall:3, kylie:1, kim:1 } },
-        { label:"I’m a charming mess with a complicated personal history.", pts:{ scott:3, tristan:1, kylie:1 } },
-      ]
-    },
-    {
-      text: "9) Your biggest flaw is probably…",
-      options: [
-        { label:"Being too forgiving.", pts:{ khloe:3, kim:1, corey:1 } },
-        { label:"Thinking I’m better than everyone.", pts:{ kourtney:3, kendall:1, kris:1 } },
-        { label:"Being flaky and bailing on plans.", pts:{ kylie:3, kendall:1, scott:1 } },
-        { label:"Everyone’s walking on eggshells around me.", pts:{ kanye:3, caitlyn:1, north:1 } },
-        { label:"Being stuck in the past / disappearing when it’s hard.", pts:{ rob:3, kendall:1, kourtney:1 } },
-        { label:"Repeatedly making bad life decisions.", pts:{ scott:2, tristan:2, kylie:1 } },
-      ]
-    },
+  text: "9) What is an ideal birthday gift for you?",
+  options: [
+    { label:"Classic jewelry.", pts:{ kris:2, kim:3, kylie:2, caitlyn:1 } },
+    { label:"Home decor.", pts:{ kendall:3, kourtney:3, kim:1 } },
+    { label:"Something cozy — robe, slippers, candle, blanket.", pts:{ rob:3, corey:3, khloe:1 } },
+    { label:"An experience: trip, concert, event, something memorable.", pts:{ khloe:3, kris:2, scott:1 } },
+    { label:"Tech or gadgets I’ll actually use.", pts:{ kendall:2, kanye:2, bruce:1 } },
+    { label:"Tickets to something — game, show, or event.", pts:{ tristan:3, scott:2, north:1 } },
+  ]
+},
+
     {
       text: "10) Which line describes you best?",
       options: [
