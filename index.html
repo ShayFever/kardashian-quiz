@@ -146,6 +146,8 @@
       color: var(--muted);
       margin-top:10px;
     }
+    .resultImg{width:100%;max-width:420px;aspect-ratio:4/3;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.14);margin:12px 0;display:block;}
+
   </style>
 </head>
 
@@ -332,8 +334,9 @@
     `).join("");
 
     content.innerHTML = `
-      <div class="q">${q.text}</div>
-      <div class="answers">${answersHtml}</div>
+      <div class="resultTitle">You’re <span style="color:var(--accent)">${p.name}</span><span class="badge">${p.badge}</span></div>
+      ${p.img ? `<img class="resultImg" src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">` : ``}
+      <p class="resultBlurb">${p.blurb}</p>
     `;
 
     backBtn.disabled = history.length === 0;
